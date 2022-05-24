@@ -1,0 +1,17 @@
+#mgic-floor {
+    position: fixed;
+    cursor: pointer;
+    width: 100px;
+    height: 50px;
+    color: #fff;
+    top: 100px;
+    right: 0;
+    text-align: center;
+    line-height: 50px;
+    z-index: 999999;
+    background: #ff5b00;
+}
+
+#mgic-floor:active {
+    background: #e05000;
+}

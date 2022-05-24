@@ -1,0 +1,39 @@
+{
+  "name": "mgicFloor",
+  "version": "1.0",
+  "description": "klook jenga data format plugin",
+  "manifest_version": 3,
+  "icons":
+  {
+    "16": "asset/back-icon.png",
+    "48": "asset/back-icon.png",
+    "128": "asset/back-icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "mgicfloor使用详情",
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.klook.com/*",
+        "https://*.klook.cn/*",
+        "https://*.fat.klook.io/*"
+      ],
+      "exclude_globs": ["*admin*"],
+      "css": ["content-scripts/mgicfloor.css"],
+      "js": [
+        "asset/jquery-1.11.0.min.js",
+        "content-scripts/mgicfloor.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [{
+    "resources": ["inject-scripts/mgicfloor.js"],
+    "matches": ["<all_urls>"]
+  }],
+  "permissions": ["storage", "scripting", "tabs"]
+}
