@@ -1,5 +1,6 @@
 let isInitMgicFloor = false;
 let btn = null;
+let floorJQ = []
 
 // 获取后端存储的配置
 chrome.storage.sync.get('openMgicFloor', (res) => {
@@ -35,38 +36,23 @@ const initMgicFloor = () => {
 
   btn = $('#mgic-floor');
 
-  btn.mousedown((event)  => {
-    const offset = btn.offset();
-    let offsetLeft = 0;
-    let offsetTop = 0;
-    x1 = event.clientX - offset.left;
-    y1 = event.clientY - offset.top;
+  btn.click(() => {
+    // 发送信息给inject获取jenga楼层数据
+    const event = new CustomEvent("needJengaData", {
+      detail: {
+        needJengaData: true
+      }
+    });
+    window.dispatchEvent(event);
 
-    $(document).mousemove((event) => {
-      if (!isNaN(event.clientX) && !isNaN(event.clientY)) {
-        offsetLeft = event.clientX - x1;
-        offsetTop = event.clientY - y1;
-        btn.css("left", offsetLeft + "px");
-        btn.css("top", offsetTop + "px");
-        btn.css("cursor", "move");
+    floorJQ = $(".wrapper__list-container").find(".wrapper__item")
+    $.each(floorJQ, (index, item) => {
+      if($(item).find('.header_title')[0]) {
+        $(item).find('.header_title p').remove()
+        $(item).find('.header_title').append(`<p style="color: red">${item.id.replace("s-","*****")}</p>`);
       }
-    });
-    btn.mouseup((event) => {
-      if(offsetLeft < 2 && offsetTop < 2) {
-        // 发送信息给inject获取jenga楼层数据
-        const event = new CustomEvent("needJengaData", {
-          detail: {
-            needJengaData: true
-          }
-        });
-        window.dispatchEvent(event);
-      }
-      btn.css("left", "unset");
-      btn.css("right", "0");
-      btn.css("cursor", "pointer");
-      $(document).unbind("mousemove");
-    });
-  });
+    })
+  })
 };
 
 window.addEventListener("sendJengaData", (e) => {
@@ -84,6 +70,7 @@ const mgicfloor = (jengaData) => {
       floorArray.push({[key]: item.body})
     })
   }
+  console.log('%c由于存在异步楼层懒加载，若无楼层数据，请滑动到页面底部触发全部加载完成后再点击获取数据按钮', 'color: red')
   console.log('floorName-dataType: floorData');
   console.log(floorArray.length > 0 ? floorArray : floor)
 };
